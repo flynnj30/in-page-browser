@@ -1,52 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>In-Page Browser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Smart Workspace</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="browser-card">
-        <!-- Toolbar -->
+    <div class="app-container" id="app">
+        <!-- TOP: Title Bar & Tabs -->
+        <div class="title-bar">
+            <div class="tabs-container" id="tabsContainer">
+                <!-- Tabs injected by JS -->
+            </div>
+            <button class="add-tab-btn" id="newTabBtn" title="New Tab">+</button>
+            <div class="window-controls">
+                <button id="themeToggleBtn" title="Toggle Light/Dark Mode">🌓</button>
+                <button id="workspaceSaveBtn" title="Save Workspace">💾</button>
+                <button id="fullscreenBtn" title="Toggle Fullscreen">⛶</button>
+            </div>
+        </div>
+
+        <!-- TOOLBAR: Navigation & App Tools -->
         <div class="toolbar">
             <div class="nav-group">
-                <button id="backBtn" title="Go Back" aria-label="Go Back">←</button>
-                <button id="forwardBtn" title="Go Forward" aria-label="Go Forward">→</button>
-                <button id="reloadBtn" title="Reload" aria-label="Reload">⟳</button>
+                <button id="backBtn" title="Go Back">◀</button>
+                <button id="forwardBtn" title="Go Forward">▶</button>
+                <button id="reloadBtn" title="Reload">⟳</button>
+                <button id="homeBtn" title="Home">🏠</button>
             </div>
             <div class="url-group">
+                <span class="secure-badge" id="secureBadge">🔒</span>
                 <input type="text" class="url-bar" id="urlInput" placeholder="Enter URL or search..." spellcheck="false" autocomplete="off">
-                <button id="goBtn" class="go-button" title="Go" aria-label="Go">→</button>
+                <button id="bookmarkBtn" class="action-btn" title="Bookmark">⭐</button>
             </div>
-            <div class="action-group">
-                <button id="homeBtn" title="Home" aria-label="Home">🏠</button>
-                <button id="newWindowBtn" title="Open in New Window" aria-label="Open in New Window">↗</button>
-                <button id="bookmarkBtn" title="Bookmark" aria-label="Bookmark">⭐</button>
+            <div class="tools-group">
+                <button id="toggleNotesBtn" title="Notes & CRM Tools">📝</button>
+                <button id="toggleScriptBtn" title="Sales Script">📜</button>
+                <button id="toggleTimerBtn" title="Call Timer">⏱️</button>
+                <button id="toggleCalcBtn" title="Calculator">🧮</button>
+                <button id="toggleClipboardBtn" title="Clipboard History">📋</button>
             </div>
         </div>
 
-        <!-- Content Area -->
-        <div class="webview-wrap" id="webviewContainer">
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="spinner"></div>
-                <span class="loading-text">Loading via proxy...</span>
-                <div class="loading-subtitle">Fetching content from the web</div>
+        <!-- MAIN LAYOUT: Browser + Docked Sidebar -->
+        <div class="main-workspace">
+            <div class="browser-views" id="viewsContainer">
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <span class="loading-text" id="loadingText">Loading...</span>
+                </div>
+                <!-- Iframes injected here -->
             </div>
-            <iframe id="browserFrame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"></iframe>
+
+            <!-- DOCKED SIDEBAR (Split-screen) -->
+            <div class="docked-sidebar" id="dockedSidebar">
+                <div class="sidebar-header">
+                    <h3>CRM Tools</h3>
+                    <div class="sidebar-actions">
+                        <button id="sidebarFloatBtn" title="Float Panels">🗗</button>
+                        <button id="sidebarCloseBtn" title="Close Split Screen">✖</button>
+                    </div>
+                </div>
+                <div class="sidebar-content">
+                    <div class="panel-section">
+                        <h4>Notes</h4>
+                        <textarea id="dockedNotesArea" placeholder="Jot down client notes here..."></textarea>
+                    </div>
+                    <div class="panel-section">
+                        <h4>Sales Script</h4>
+                        <textarea id="dockedScriptArea" placeholder="Your sales script..." readonly>Hi [Name], this is [Your Name] from Regen Digital. I noticed you recently...</textarea>
+                        <button class="edit-script-btn" onclick="document.getElementById('dockedScriptArea').removeAttribute('readonly')">Edit</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Status Bar -->
+        <!-- STATUS BAR -->
         <div class="status-line">
-            <div class="left">
-                <span id="statusText">✅ Ready</span>
-                <span class="badge proxy-badge">PROXY</span>
-                <span class="badge secure-badge" id="secureBadge">🔒</span>
+            <span id="statusText">✅ Ready</span>
+            <span id="activeUrlDisplay">🔗 -</span>
+        </div>
+    </div>
+
+    <!-- FLOATING PANELS -->
+    <div id="calcPanel" class="floating-panel hidden">
+        <div class="panel-header" id="calcHeader">🧮 Calculator <button class="close-panel">✖</button></div>
+        <div class="panel-body">
+            <input type="text" id="calcDisplay" disabled>
+            <div class="calc-grid">
+                <button onclick="calcPress('7')">7</button><button onclick="calcPress('8')">8</button><button onclick="calcPress('9')">9</button><button onclick="calcPress('/')">/</button>
+                <button onclick="calcPress('4')">4</button><button onclick="calcPress('5')">5</button><button onclick="calcPress('6')">6</button><button onclick="calcPress('*')">*</button>
+                <button onclick="calcPress('1')">1</button><button onclick="calcPress('2')">2</button><button onclick="calcPress('3')">3</button><button onclick="calcPress('-')">-</button>
+                <button onclick="calcPress('C')">C</button><button onclick="calcPress('0')">0</button><button onclick="calcPress('=')">=</button><button onclick="calcPress('+')">+</button>
             </div>
-            <div class="center" id="pageTitle">In-Page Browser</div>
-            <div class="right">
-                <span id="urlDisplay">🔗 Ready</span>
+        </div>
+    </div>
+
+    <div id="timerPanel" class="floating-panel hidden">
+        <div class="panel-header" id="timerHeader">⏱️ Call Timer <button class="close-panel">✖</button></div>
+        <div class="panel-body timer-body">
+            <div id="timerDisplay">00:00:00</div>
+            <div class="timer-controls">
+                <button id="timerStart">Start</button>
+                <button id="timerPause">Pause</button>
+                <button id="timerReset">Reset</button>
             </div>
+        </div>
+    </div>
+
+    <div id="clipboardPanel" class="floating-panel hidden">
+        <div class="panel-header" id="clipboardHeader">📋 Clipboard History <button class="close-panel">✖</button></div>
+        <div class="panel-body">
+            <div class="clipboard-tools">
+                <button id="captureClipboardBtn">Capture Current Clipboard</button>
+            </div>
+            <ul id="clipboardList" class="clipboard-list"></ul>
         </div>
     </div>
 
