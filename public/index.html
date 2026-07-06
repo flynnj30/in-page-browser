@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>In-Page Browser</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="browser-card">
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="nav-group">
+                <button id="backBtn" title="Go Back" aria-label="Go Back">←</button>
+                <button id="forwardBtn" title="Go Forward" aria-label="Go Forward">→</button>
+                <button id="reloadBtn" title="Reload" aria-label="Reload">⟳</button>
+            </div>
+            <div class="url-group">
+                <input type="text" class="url-bar" id="urlInput" placeholder="Enter URL or search..." spellcheck="false" autocomplete="off">
+                <button id="goBtn" class="go-button" title="Go" aria-label="Go">→</button>
+            </div>
+            <div class="action-group">
+                <button id="homeBtn" title="Home" aria-label="Home">🏠</button>
+                <button id="newWindowBtn" title="Open in New Window" aria-label="Open in New Window">↗</button>
+                <button id="bookmarkBtn" title="Bookmark" aria-label="Bookmark">⭐</button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="webview-wrap" id="webviewContainer">
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <span class="loading-text">Loading via proxy...</span>
+                <div class="loading-subtitle">Fetching content from the web</div>
+            </div>
+            <iframe id="browserFrame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"></iframe>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-line">
+            <div class="left">
+                <span id="statusText">✅ Ready</span>
+                <span class="badge proxy-badge">PROXY</span>
+                <span class="badge secure-badge" id="secureBadge">🔒</span>
+            </div>
+            <div class="center" id="pageTitle">In-Page Browser</div>
+            <div class="right">
+                <span id="urlDisplay">🔗 Ready</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
